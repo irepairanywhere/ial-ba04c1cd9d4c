@@ -421,6 +421,22 @@ dialog::backdrop{background:rgba(10,11,18,.5);backdrop-filter:blur(3px)}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
+<!-- RLM analytics: GA4 + Meta pixel (added 2026-10-31) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-G7FWPKBQBZ"></script>
+<script>
+window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-G7FWPKBQBZ');
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','1010192419960814');fbq('track','PageView');
+(function(){function ev(n,p,meta){try{gtag('event',n,p||{})}catch(e){}if(meta!==false){try{fbq('trackCustom',n,p||{})}catch(e){}}}
+document.addEventListener('click',function(e){var t=e.target;if(!t||!t.closest)return;
+var b=t.closest('button');
+if(t.closest('[data-qsave]')||(b&&/Save to Swipe/i.test(b.textContent||''))){ev('library_ad_saved');return}
+if(t.closest('#addfilter')){ev('library_filter_opened');return}
+var c=t.closest('article.card');if(c){ev('library_ad_opened');return}
+var a=t.closest('a[href*="facebook.com/ads/library"]');if(a){ev('library_meta_record_opened')}},true);
+var qt;document.addEventListener('input',function(e){var el=e.target;if(!el||el.id!=='q')return;clearTimeout(qt);var v=(el.value||'').trim();qt=setTimeout(function(){if(v.length>2)ev('library_search',{search_term:v.slice(0,80)},false)},1500)},true);})();
+</script>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=1010192419960814&ev=PageView&noscript=1"></noscript>
 </head>
 <body>
 <div class="app">
@@ -680,7 +696,7 @@ function renderSide(){
   $("#tree").innerHTML=SW.folders.map(f=>`<a href="#" class="f" data-folder="${f.id}" aria-current="${S.folder===f.id&&!S.board}">${ic("folder","s")}<span>${esc(f.name)}</span></a>`+
      SW.boards.filter(b=>b.folder===f.id).map(b=>`<a href="#" class="b" data-board="${b.id}" aria-current="${S.board===b.id}">${ic("board","s")}<span>${esc(b.name)}</span><b class="cnt">${Object.values(SW.saved).filter(s=>s.boards.includes(b.id)).length}</b></a>`).join("")).join("")
      +(SW.boards.length?"":`<div class="empty" style="padding:6px 10px;animation:none;text-align:left">No boards yet. Use New, Create board.</div>`);
-  $("#sbnote").innerHTML=`<b>${fmtN(DB.length)} ads · ${fmtN(Object.keys(FAMS).length)} creatives</b><br>Library updated ${LIBRARY_UPDATED}<br>${fmtN(LATEST_ADS.size)} videos added · source snapshot ${esc(CONFIG.snapshot||"")}.<br>Research only; no performance data.`;
+  $("#sbnote").innerHTML=`<b>${fmtN(DB.length)} ads · ${fmtN(Object.keys(FAMS).length)} creatives</b><br>Library updated ${LIBRARY_UPDATED}<br>${fmtN(LATEST_ADS.size)} videos added · source snapshot ${esc(CONFIG.snapshot||"")}.<br>Research only; no performance data.<br><a href="https://rocketlaunchmedia.com/privacy-policy/" target="_blank" rel="noopener" style="color:inherit;text-decoration:underline">We use analytics cookies · Privacy</a>`;
 }
 function renderTop(){
   $("#countlabel").textContent=S.all?"Ads":"Creatives";
