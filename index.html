@@ -385,6 +385,40 @@ dialog::backdrop{background:rgba(10,11,18,.5);backdrop-filter:blur(3px)}
   .rows{grid-template-columns:120px minmax(0,1fr)}
   .db .two{grid-template-columns:1fr}
 }
+
+/* Clear collection totals and touch layouts. */
+.library-update{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 16px;background:var(--pri-soft);border-bottom:1px solid #e3d9ff;flex-shrink:0;font-size:12px}
+.library-update>span{min-width:0}.library-update b{font-weight:600}.library-update small{display:block;color:var(--muted)}
+.library-update .btn{font-size:12px;border-color:#d9ccff;color:var(--pri)}
+.library-update .btn[aria-pressed="true"]{background:var(--pri);color:white}
+.sideback,.sideclose{display:none}
+.topbar,.tabs,.fbar{flex-shrink:0}.search{min-width:0}
+.pop{max-width:calc(100vw - 16px)}
+@media (min-width:861px) and (max-width:1100px){.fbar .chips:has(.sugg){display:none}.side{width:250px}.topbar{flex-wrap:wrap}.search{order:5;flex-basis:100%;max-width:none}.mbox{grid-template-columns:minmax(0,1fr) minmax(0,380px)}}
+@media (max-width:860px){
+ .side{width:min(300px,calc(100vw - 24px));padding-top:max(14px,env(safe-area-inset-top));padding-bottom:max(14px,env(safe-area-inset-bottom));overflow-y:auto}
+ .side.mini{width:min(300px,calc(100vw - 24px))}.side>*{flex-shrink:0}.side .tree{flex:0 0 auto;overflow:visible}.sbfoot{margin-top:16px}
+ .side.open~.sideback{display:block;position:fixed;inset:0;z-index:49;background:rgba(10,11,18,.6);border:0}
+ .sideclose{display:grid;position:absolute;right:12px;top:12px;color:white;background:var(--side2);width:44px;height:44px}.sbtop{padding-right:48px}
+ .side.mini .sbtop{flex-direction:row}.side.mini .sbtop b{display:block}.side.mini .apps{flex-direction:row;align-items:center}.side.mini .appt{width:52px;height:52px}
+ .side.mini .apptip{display:inline-flex}.side.mini .nav span,.side.mini .nav .cnt,.side.mini .sect span,.side.mini .sbfoot .btn span{display:inline}
+ .side.mini .sect .ibtn{display:grid}.side.mini .tree{display:grid}.side.mini .sbfoot p{display:block}.side.mini .nav a,.side.mini .nav button{justify-content:flex-start}
+ .side.mini .sbfoot{padding:12px;background:var(--side2);border:1px solid #23263c}
+ .topbar{padding-top:max(8px,env(safe-area-inset-top))}.ptitle{flex:1}.ptitle .pico{display:none}#newbtn{margin-left:auto;min-width:44px;justify-content:center}#newbtn span{display:inline-flex}
+ .btn,.ibtn,.sq,.tabs button,.mi,.nav a,.mtabs button,.langt button,.mtop .nav2,.mfoot a,.readmore{min-height:44px}
+ .ibtn,.sq{min-width:44px}.search{height:44px}.search input{width:100%}
+ .library-update{padding:8px 10px;gap:8px}.library-update .btn{padding:6px 9px;white-space:normal;text-align:left;max-width:145px;line-height:1.3}
+ .fbar{gap:4px;padding:4px 8px}.fbar .chips:has(.sugg){display:none}.fright{margin-left:auto}.fright .btn{padding:8px;min-width:44px;justify-content:center}
+ .fbar .chips:has(.chip){order:3;flex-basis:100%;padding-bottom:4px}.chip{min-height:44px;min-width:0}.chip button{min-width:36px;min-height:36px}.chip .v{max-width:calc(100vw - 130px)}
+ .feed{overscroll-behavior:contain;padding-bottom:max(12px,env(safe-area-inset-bottom))}.savebar{max-height:none;opacity:1}.savebar button{min-height:44px}
+ .mbox{display:block;overscroll-behavior:contain;padding-bottom:env(safe-area-inset-bottom)}.mleft{display:contents}.mtop{top:0;padding-top:max(8px,env(safe-area-inset-top))}.mstage{display:flex}
+ .mright{display:block}.mbody{padding:14px 12px}.rows{grid-template-columns:95px minmax(0,1fr);gap:10px;font-size:13px}.txtblk div{max-height:none;overflow:visible;overflow-wrap:anywhere}
+ .pvh b,.pvf b{overflow-wrap:anywhere}.pvm video,.pvm img{max-height:55dvh}.pvf{flex-wrap:wrap}.pvc{overflow-wrap:anywhere}
+ .pop .pl{max-height:45dvh}.pop input,.db input,.db select,.db textarea{font-size:16px}.bgrid{grid-template-columns:repeat(auto-fit,minmax(min(250px,100%),1fr))}
+ .toast{max-width:calc(100vw - 24px);width:max-content;bottom:max(16px,env(safe-area-inset-bottom));overflow-wrap:anywhere}
+}
+@media (max-width:360px){.fright .btn{min-width:44px;padding:8px 6px}.fbar #addfilter{padding:8px}.library-update{font-size:11px}.library-update .btn{max-width:125px}}
+
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
@@ -392,6 +426,7 @@ dialog::backdrop{background:rgba(10,11,18,.5);backdrop-filter:blur(3px)}
 <div class="app">
   <nav class="side" id="side" aria-label="Main">
     <div class="sbtop"><div class="logo" data-ic="rocket"></div><b id="brandname">RLM Ads</b><button class="ibtn" id="collapse" type="button" aria-label="Collapse sidebar" data-ic="panel"></button></div>
+    <button class="ibtn sideclose" id="sideclose" type="button" aria-label="Close navigation">✕</button>
     <div class="apps" id="apps"></div>
     <div class="apptip" id="apptip"></div>
     <div class="nav" id="nav"></div>
@@ -399,15 +434,17 @@ dialog::backdrop{background:rgba(10,11,18,.5);backdrop-filter:blur(3px)}
     <div class="nav tree" id="tree"></div>
     <div class="sbfoot"><p id="sbnote" style="margin:0"></p><button class="btn" type="button" id="settings"><span data-ic="settings"></span><span>Search settings</span></button></div>
   </nav>
+  <button class="sideback" id="sideback" aria-label="Close navigation" type="button"></button>
 
   <div class="main">
     <header class="topbar">
-      <button class="ibtn burger" type="button" id="burger" aria-label="Open menu" data-ic="menu"></button>
-      <div class="ptitle"><div class="pico" id="pico"></div><b id="ptitle"></b><span class="count"><span>Ad Count</span><b id="adcount">0</b></span></div>
+      <button class="ibtn burger" type="button" id="burger" aria-label="Open menu" aria-controls="side" aria-expanded="false" data-ic="menu"></button>
+      <div class="ptitle"><div class="pico" id="pico"></div><b id="ptitle"></b><span class="count"><span id="countlabel">Creatives</span><b id="adcount">0</b></span></div>
       <form class="search" id="askform" autocomplete="off"><span data-ic="search"></span><input id="q" type="search" aria-label="Search ads" placeholder="Search keywords, brands, offers… or ask a question"><span class="ai" id="mode"></span><kbd>⌘K</kbd></form>
       <button class="btn pri" type="button" id="newbtn"><span data-ic="plus"></span><span>New</span></button>
     </header>
     <div class="tabs" id="tabs" role="tablist"></div>
+    <div class="library-update" id="library-update" aria-label="Library update"></div>
     <div class="fbar" id="fbar">
       <button class="btn ghost" type="button" id="addfilter"><span data-ic="filter"></span>Add Filter</button>
       <div class="chips" id="chips"></div>
@@ -493,6 +530,8 @@ hydrateIcons();
 const FIC={fit:"target",adv:"building",case:"scale",offer:"tag",lang:"languages",fmt:"layers",status:"radio",dest:"arrow",src:"db",review:"star",flag:"flag",aud:"users"};
 
 /* ---------- data ---------- */
+const LATEST_ADS=new Set(DB.filter(r=>(r.extra||[]).some(e=>e[0]==="Batch"&&String(e[1]).startsWith("2 ·"))).map(r=>r.id));
+const LIBRARY_UPDATED="31 Oct 2026";
 const AGENCY=CONFIG.facets.some(f=>f[0]==="fit");
 function prep(r){
   const E=r.en||{}; r._fields=[["Transcript",r.tr],["English",[E.hook,E.headline,E.copy,E.tr,E.cardText].filter(Boolean).join(" ")],["Ad copy",r.copy],["Headline",r.headline],["Card text",r.cardText],["Hook",r.hook],["Tags",r.tags],["Notes",r.score?[r.score.why,r.score.risks,r.score.notes].join(" "):""],["Landing page",r.landing]];
@@ -528,7 +567,7 @@ const BLOBURL={};
 async function loadManualMedia(){for(const m of MAN){ if(m._blob&&!BLOBURL[m.id]){const b=await IDB.get(m.id); if(b){BLOBURL[m.id]=URL.createObjectURL(b); if(m._blob==="video") m.video=BLOBURL[m.id]; else m.image=BLOBURL[m.id];}}}}
 
 /* ---------- state ---------- */
-let S={view:"discover",tab:"ads",sel:{},text:[],minDays:0,since:"all",saved:false,board:null,folder:null,all:false,sort:"best",cols:store.get("cols",0),brand:null};
+let S={view:"discover",tab:"ads",sel:{},text:[],minDays:0,since:"all",latest:false,saved:false,board:null,folder:null,all:false,sort:"best",cols:store.get("cols",0),brand:null};
 FACETS.forEach(([k])=>S.sel[k]=new Set());
 let CUR=null, LIMIT=60, LAST=[], THREAD=[], PREVCHIPS=new Set();
 
@@ -608,6 +647,7 @@ function inView(r){
   return true;
 }
 function passes(r,skip){
+  if(S.latest&&!LATEST_ADS.has(r.id)) return false;
   for(const [k] of FACETS){ if(k===skip) continue; const set=S.sel[k]; if(set.size&&!(r.facets[k]||[]).some(v=>set.has(v))) return false; }
   if(skip!=="days"&&S.minDays&&!((r.days||0)>=S.minDays)) return false;
   if(skip!=="when"&&!sinceOk(r)) return false;
@@ -635,14 +675,16 @@ function renderSide(){
     `<button class="appt brief" type="button" data-act="brief" aria-label="Briefs (phase 2)" title="Briefs: phase 2">${ic("brief")}</button>`;
   const v=VIEWS[S.view]; $("#apptip").innerHTML=`${v[0]} <kbd>${v[3]}</kbd>`;
   const nsaved=Object.keys(SW.saved).length+MAN.length;
-  $("#nav").innerHTML=[["discover","home","All ads",fmtN(new Set(DB.map(r=>r.fam)).size)],["swipe","bookmark","Swipe File",nsaved||""],["brands","building","Brands",VALUES.adv.length],["search","search","Search…",""]]
+  $("#nav").innerHTML=[["discover","home","All creatives",fmtN(new Set(DB.map(r=>r.fam)).size)],["swipe","bookmark","Swipe File",nsaved||""],["brands","building","Brands",VALUES.adv.length],["search","search","Search…",""]]
     .map(([k,i,l,n])=>`<a href="#" data-${k==="search"?"act":"view"}="${k}" aria-current="${S.view===k&&!S.board}">${ic(i)}<span>${l}</span>${n!==""?`<b class="cnt">${n}</b>`:""}</a>`).join("");
   $("#tree").innerHTML=SW.folders.map(f=>`<a href="#" class="f" data-folder="${f.id}" aria-current="${S.folder===f.id&&!S.board}">${ic("folder","s")}<span>${esc(f.name)}</span></a>`+
      SW.boards.filter(b=>b.folder===f.id).map(b=>`<a href="#" class="b" data-board="${b.id}" aria-current="${S.board===b.id}">${ic("board","s")}<span>${esc(b.name)}</span><b class="cnt">${Object.values(SW.saved).filter(s=>s.boards.includes(b.id)).length}</b></a>`).join("")).join("")
      +(SW.boards.length?"":`<div class="empty" style="padding:6px 10px;animation:none;text-align:left">No boards yet. Use New, Create board.</div>`);
-  $("#sbnote").innerHTML=`<b>${fmtN(DB.length)} ads</b> captured ${esc(CONFIG.snapshot||"")}. Research only: there's no spend, CPL or results data for these ads.`;
+  $("#sbnote").innerHTML=`<b>${fmtN(DB.length)} ads · ${fmtN(Object.keys(FAMS).length)} creatives</b><br>Library updated ${LIBRARY_UPDATED}<br>${fmtN(LATEST_ADS.size)} videos added · source snapshot ${esc(CONFIG.snapshot||"")}.<br>Research only; no performance data.`;
 }
 function renderTop(){
+  $("#countlabel").textContent=S.all?"Ads":"Creatives";
+  $("#library-update").innerHTML=`<span><b>${fmtN(DB.length)} ads · ${fmtN(Object.keys(FAMS).length)} creatives</b><small>Updated ${LIBRARY_UPDATED}</small></span><button type="button" class="btn" id="latestads" aria-pressed="${S.latest}">${fmtN(LATEST_ADS.size)} newly added ${ic("arrow","s")}</button>`;
   const v=VIEWS[S.view]; const pc=$("#pico");
   pc.className="pico appt "+v[1]; pc.style.cssText="width:34px;height:34px;border-radius:10px;cursor:default;border:0;box-shadow:none"; pc.innerHTML=ic(v[2]);
   const b=S.board&&SW.boards.find(x=>x.id===S.board);
@@ -657,6 +699,7 @@ function renderTop(){
 function fieldLabel(k){return (FACETS.find(f=>f[0]===k)||[k,k])[1];}
 function chipsHTML(){
   const ch=[];
+  if(S.latest) ch.push(["latest",`<span class="chip"><span class="v">Newly added videos</span><button type="button" id="clearlatest" aria-label="Remove newly added filter">${ic("x","xs")}</button></span>`]);
   FACETS.forEach(([k,l])=>{ if(S.sel[k].size) ch.push([`f:${k}:${[...S.sel[k]].join("|")}`,`<span class="chip" data-key="f:${k}">${ic(FIC[k]||"tag","xs")}<span class="k">${esc(l)}</span><span class="v" title="${esc([...S.sel[k]].join(", "))}">${esc([...S.sel[k]].join(", "))}</span>${[...S.sel[k]].map(v=>`<button type="button" aria-label="Remove ${esc(v)}" data-rm="${k}" data-v="${esc(v)}" hidden></button>`).join("")}<button type="button" aria-label="Remove ${esc(l)} filter" data-rmf="${k}">${ic("x","xs")}</button></span>`]);});
   S.text.forEach((t,i)=>ch.push([`t:${t}`,`<span class="chip">${ic("search","xs")}<span class="k">Mentions</span><span class="v">"${esc(t)}"</span><button type="button" aria-label="Remove ${esc(t)}" data-rmt="${i}">${ic("x","xs")}</button></span>`]));
   if(S.minDays) ch.push([`d:${S.minDays}`,`<span class="chip">${ic("clock","xs")}<span class="k">Running</span><span class="v">${S.minDays}+ days</span><button type="button" aria-label="Remove day filter" data-rmd="1">${ic("x","xs")}</button></span>`]);
@@ -666,6 +709,9 @@ function chipsHTML(){
   return (CONFIG.suggest||[]).slice(0,4).map(s=>`<button class="sugg" type="button" data-sugg="${esc(s)}">${ic("sparkles","xs")}${esc(s)}</button>`).join("");
 }
 function renderFbar(){
+  $("#sortbtn").setAttribute("aria-label","Sort: "+((SORTL.find(s=>s[0]===S.sort)||SORTL[0])[1]));
+  $("#whenbtn").setAttribute("aria-label","Start date: "+((WHEN.find(w=>w[0]===S.since)||WHEN[0])[1]));
+  $("#groupbtn").setAttribute("aria-label",S.all?"Show grouped creatives":"Show every ad version");
   $("#chips").innerHTML=chipsHTML();
   $("#whenlbl").textContent=(WHEN.find(w=>w[0]===S.since)||WHEN[0])[1].replace("Started in the last ","Last ");
   $("#sortlbl").textContent=(SORTL.find(s=>s[0]===S.sort)||SORTL[0])[1];
@@ -780,7 +826,7 @@ function openPop(anchor,build,opts={}){
   const r=anchor.getBoundingClientRect(); const w=el.offsetWidth, h=el.offsetHeight;
   let x=opts.right?r.right-w:r.left; x=Math.max(8,Math.min(x,innerWidth-w-8));
   let y=r.bottom+6; if(y+h>innerHeight-8&&r.top-h-6>8){y=r.top-h-6; el.classList.add("up");}
-  el.style.left=x+"px"; el.style.top=Math.max(8,y)+"px";
+  y=Math.max(8,Math.min(y,innerHeight-h-8)); el.style.left=x+"px"; el.style.top=y+"px";el.style.maxHeight=(innerHeight-y-8)+"px";el.style.overflowY="auto";
   const f=el.querySelector("input,.mi"); f&&f.focus({preventScroll:true});
 }
 function drawPop(back){ if(!POP) return; POP.el.innerHTML=POP.build(POP.state); if(back) POP.el.querySelector(".pl")?.classList.add("back"); }
@@ -1010,7 +1056,7 @@ function renderThread(){
 
 /* ---------- apply a request ---------- */
 function applyParsed(p,replace){
-  if(replace){FACETS.forEach(([k])=>S.sel[k]=new Set());S.text=[];S.minDays=0;S.saved=false;}
+  if(replace){S.latest=false;FACETS.forEach(([k])=>S.sel[k]=new Set());S.text=[];S.minDays=0;S.saved=false;}
   Object.entries(p.sel).forEach(([k,vals])=>vals.forEach(v=>S.sel[k]&&S.sel[k].add(v)));
   S.text.push(...p.text); if(p.minDays) S.minDays=p.minDays; if(p.saved) S.saved=true; if(p.sort) S.sort=p.sort;
 }
@@ -1028,8 +1074,8 @@ async function run(question){
   const p=parseAsk(question); applyParsed(p,true); render();
   if(!LAST.length&&S.text.length){ const dropped=S.text.slice(); S.text=[]; render(); toast(`No ad mentions "${dropped.join(" ")}". Showing your other filters.`); }
 }
-function go(view,tab){ S.view=view; S.tab=tab||(view==="brands"?"brands":"ads"); S.board=null; S.folder=null; S.brand=null; if(view!=="swipe") S.saved=false; LIMIT=60; closeSide(); render(); }
-function closeSide(){$("#side").classList.remove("open");}
+function go(view,tab){ S.latest=false; S.view=view; S.tab=tab||(view==="brands"?"brands":"ads"); S.board=null; S.folder=null; S.brand=null; if(view!=="swipe") S.saved=false; LIMIT=60; closeSide(); render(); }
+function closeSide(){$("#side").classList.remove("open");$("#burger").setAttribute("aria-expanded","false");}
 
 /* ---------- events ---------- */
 $("#askform").addEventListener("submit",e=>{e.preventDefault(); run($("#q").value);});
@@ -1050,6 +1096,9 @@ document.addEventListener("click",async e=>{
     if(a==="newboard") return dlgBoard(pfam); if(a==="newfolder") return dlgFolder(); if(a==="upload") return dlgUpload(); if(a==="savead") return dlgSaveAd();
     if(a==="brief") return toast("Briefs are phase 2"); if(a==="search"){closeSide(); $("#q").focus(); return;} return; }
   // top bar + filter bar
+  if(t.id==="sideback"||t.id==="sideclose"){closeSide();$("#burger").focus();return;}
+  if(t.id==="latestads"){closeModal();closeSide();S.view="discover";S.tab="ads";S.latest=true;S.board=null;S.saved=false;S.text=[];S.minDays=0;S.since="all";FACETS.forEach(([k])=>S.sel[k]=new Set());$("#q").value="";LIMIT=60;render();return;}
+  if(t.id==="clearlatest"){S.latest=false;render();return;}
   if(t.id==="newbtn") return openPop(t,newMenu,{right:true});
   if(t.id==="addfilter") return openPop(t,filterMenu);
   if(t.id==="whenbtn") return openPop(t,radioMenu(WHEN,()=>S.since,"pwhen","Start date"),{right:true});
@@ -1057,21 +1106,21 @@ document.addEventListener("click",async e=>{
   if(t.id==="colbtn") return openPop(t,radioMenu([[0,"Large cards"],[1,"Small cards"]],()=>S.cols,"pcols","Card size"),{right:true});
   if(t.id==="groupbtn"){ S.all=!S.all; render(); toast(S.all?"Showing every version":"Grouping versions of the same ad"); return; }
   if(t.id==="collapse"){ $("#side").classList.toggle("mini"); store.set("mini",$("#side").classList.contains("mini")); setTimeout(()=>renderGrid(true),360); return; }
-  if(t.id==="burger"){ $("#side").classList.add("open"); return; }
+  if(t.id==="burger"){ $("#side").classList.add("open");$("#burger").setAttribute("aria-expanded","true");$("#sideclose").focus(); return; }
   if(t.id==="settings"){ closeSide(); return dlgSettings(); }
   if(t.dataset.view){ e.preventDefault(); return go(t.dataset.view); }
   if(t.dataset.tab){ S.tab=t.dataset.tab; if(S.view==="discover"&&S.tab==="brands"){} LIMIT=60; render(); return; }
   if(t.dataset.clearboard){ S.board=null; render(); return; }
   if(t.dataset.folder){ e.preventDefault(); S.view="swipe"; S.tab="boards"; S.folder=t.dataset.folder; S.board=null; closeSide(); render(); return; }
   if(t.dataset.board&&!t.dataset.boardmenu){ e.preventDefault(); S.view="swipe"; S.tab="ads"; S.board=t.dataset.board; closeSide(); LIMIT=60; render(); return; }
-  if(t.dataset.brand){ e.preventDefault(); closeModal(); S.view="discover"; S.tab="ads"; S.board=null; FACETS.forEach(([k])=>S.sel[k]=new Set()); S.sel.adv=new Set([t.dataset.brand]); S.text=[]; LIMIT=60; render(); return; }
+  if(t.dataset.brand){ e.preventDefault(); closeModal(); S.view="discover"; S.tab="ads"; S.board=null; FACETS.forEach(([k])=>S.sel[k]=new Set()); S.latest=false; S.sel.adv=new Set([t.dataset.brand]); S.text=[]; LIMIT=60; render(); return; }
   // chips
   if(t.dataset.rmf){ S.sel[t.dataset.rmf]=new Set(); render(); return; }
   if(t.dataset.rm){ S.sel[t.dataset.rm].delete(t.dataset.v); render(); return; }
   if(t.dataset.rmt!=null){ S.text.splice(+t.dataset.rmt,1); render(); return; }
   if(t.dataset.rmd){ S.minDays=0; render(); return; }
   if(t.dataset.rms){ S.saved=false; render(); return; }
-  if(t.id==="clearall"){ FACETS.forEach(([k])=>S.sel[k]=new Set()); S.text=[]; S.minDays=0; S.saved=false; S.since="all"; $("#q").value=""; render(); return; }
+  if(t.id==="clearall"){ S.latest=false; FACETS.forEach(([k])=>S.sel[k]=new Set()); S.text=[]; S.minDays=0; S.saved=false; S.since="all"; $("#q").value=""; render(); return; }
   if(t.dataset.drop){ const l=t.dataset.drop; let done=false;
     FACETS.forEach(([k,lab])=>S.sel[k].forEach(v=>{if(!done&&l===`${lab}: ${v}`){S.sel[k].delete(v);done=true;}}));
     if(!done){const i=S.text.findIndex(x=>l===`Mentions "${x}"`); if(i>=0){S.text.splice(i,1);done=true;}}
@@ -1117,7 +1166,7 @@ document.addEventListener("keydown",e=>{
 });
 // hover-to-preview video on cards (like Foreplay)
 let HOV=null;
-document.addEventListener("mouseover",e=>{ const m=e.target.closest(".media[data-hv]"); if(!m||m===HOV) return; HOV=m; clearTimeout(m._t);
+document.addEventListener("mouseover",e=>{ const m=e.target.closest(".media[data-hv]"); if(!matchMedia("(hover: hover) and (pointer: fine)").matches||!m||m===HOV) return; HOV=m; clearTimeout(m._t);
   m._t=setTimeout(()=>{ if(HOV!==m||m.querySelector("video.hv")) return; const v=document.createElement("video"); v.className="hv ld"; v.muted=true; v.loop=true; v.playsInline=true; v.src=m.dataset.hv;
     v.style.cssText="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"; m.appendChild(v); v.play().then(()=>m.classList.add("playing")).catch(()=>v.remove()); },450); });
 document.addEventListener("mouseout",e=>{ const m=e.target.closest(".media[data-hv]"); if(!m||m.contains(e.relatedTarget)) return; HOV=null; clearTimeout(m._t); m.querySelector("video.hv")?.remove(); m.classList.remove("playing"); });
