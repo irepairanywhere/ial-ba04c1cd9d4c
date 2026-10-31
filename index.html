@@ -420,6 +420,148 @@ dialog::backdrop{background:rgba(10,11,18,.5);backdrop-filter:blur(3px)}
 @media (max-width:360px){.fright .btn{min-width:44px;padding:8px 6px}.fbar #addfilter{padding:8px}.library-update{font-size:11px}.library-update .btn{max-width:125px}}
 
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.001ms!important;scroll-behavior:auto!important}}
+
+/* ---------- Swipe mode (Discover): one ad at a time. Gesture model ported from 21st.dev "Card Stack" (flick velocity, rubber-band Y, stamps, undo from exit). ---------- */
+.tabs .dxtab,.dxtab{all:unset;display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:999px;cursor:pointer;font-weight:600;color:#fff;background:linear-gradient(135deg,#8b5cf6,#ec4899);white-space:nowrap;box-shadow:0 4px 14px -6px #db2777;margin-left:4px}
+.dxtab:focus-visible{outline:2px solid var(--pri);outline-offset:2px}
+.dxfab{display:none}
+@media (max-width:860px){.dxfab{display:inline-flex;align-items:center;gap:8px;position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:35;border:0;border-radius:999px;padding:13px 18px;font-weight:700;color:#fff;background:linear-gradient(135deg,#8b5cf6,#ec4899);box-shadow:0 10px 26px -8px rgba(219,39,119,.7);cursor:pointer}}
+.dx{position:fixed;inset:0;z-index:70;background:#0d0e17;color:#fff;display:none;flex-direction:column;height:100vh;height:100dvh;overscroll-behavior:contain;-webkit-tap-highlight-color:transparent}
+.dx.open{display:flex;animation:fadein .2s var(--ease) both}
+.dx button{font:inherit}
+.dxbar{display:flex;align-items:center;gap:8px;padding:calc(8px + env(safe-area-inset-top,0px)) 12px 8px;flex:0 0 auto}
+.dxbar .ib{width:42px;height:42px;border-radius:12px;border:0;background:#1b1d2b;color:#fff;display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
+.dxbar .ib .i{width:20px;height:20px}
+.dxboard{flex:1;min-width:0;display:flex;align-items:center;gap:8px;background:#1b1d2b;border:0;color:#fff;border-radius:12px;padding:0 12px;height:42px;cursor:pointer;text-align:left}
+.dxboard span{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dxboard small{display:block;font-size:11px;color:#9a9fb5;line-height:1.1}
+.dxboard b{display:block;font-size:14.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dxfilt{display:flex;gap:6px;padding:0 12px 8px;overflow-x:auto;scrollbar-width:none;flex:0 0 auto}
+.dxfilt::-webkit-scrollbar{display:none}
+.dxfilt span{flex:0 0 auto;font-size:12px;font-weight:600;padding:4px 10px;border-radius:999px;background:#1b1d2b;color:#d6d8e6;white-space:nowrap}
+.dxfilt span.n{background:transparent;color:#9a9fb5;font-weight:500}
+.dxstage{position:relative;flex:1;min-height:0;margin:0 12px}
+.dxcard{position:absolute;inset:0;background:#fff;color:var(--ink);border-radius:20px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 18px 40px -16px rgba(0,0,0,.75);touch-action:pan-y;user-select:none;-webkit-user-select:none;will-change:transform;transform-origin:50% 100%}
+.dxcard.back{transform:scale(.94);opacity:.45;pointer-events:none;transition:transform .3s var(--ease),opacity .3s}
+.dxcard.back2{display:none}
+.dxvc[hidden]{display:none!important}
+.dxcard.settle{transition:transform .45s cubic-bezier(.34,1.4,.64,1)}
+.dxch{display:flex;align-items:center;gap:9px;padding:10px 12px;flex:0 0 auto}
+.dxch b{flex:1;min-width:0;font-size:15px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dxmedia{position:relative;flex:1;min-height:120px;background:#0f1117;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.dxmedia .bg{position:absolute;inset:-20px;background:center/cover;filter:blur(22px) brightness(.55);transform:scale(1.1)}
+.dxmedia img,.dxmedia video{position:relative;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block;pointer-events:none;-webkit-user-drag:none}
+.dxmedia video{width:100%;height:100%}
+.dxmedia .skel{position:absolute;inset:0;background:linear-gradient(100deg,#151722 30%,#1e2130 50%,#151722 70%);background-size:200% 100%;animation:shimmer 1.3s linear infinite}
+.dxmedia .fail{position:relative;color:#cfd3dc;font-size:13px;text-align:center;padding:20px;display:grid;gap:10px;justify-items:center}
+.dxmedia .fail a{color:#fff;font-weight:600}
+.dxtext{position:relative;width:100%;height:100%;background:linear-gradient(180deg,#fff,#f6f7fb);color:var(--ink);padding:18px 18px 14px;overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.dxtext .lab{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);background:var(--line2);border-radius:6px;padding:3px 8px}
+.dxtext .hd{font-size:18px;font-weight:700;line-height:1.3}
+.dxtext .bd{font-size:15px;line-height:1.55;color:var(--tx);white-space:pre-line;flex:1;overflow:hidden;-webkit-mask-image:linear-gradient(#000 75%,transparent);mask-image:linear-gradient(#000 75%,transparent)}
+.dxvc{position:absolute;left:8px;right:8px;bottom:8px;display:flex;align-items:center;gap:8px;background:rgba(10,12,20,.72);backdrop-filter:blur(8px);border-radius:12px;padding:6px 8px;z-index:3;touch-action:none}
+.dxvc button{width:40px;height:40px;border:0;border-radius:10px;background:rgba(255,255,255,.12);color:#fff;display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
+.dxvc button .i{width:18px;height:18px}
+.dxvc .pl .i{fill:#fff}
+.dxvc input{flex:1;min-width:0;accent-color:#fff;height:28px}
+.dxvc .t{font-size:11.5px;color:#d6d8e6;font-variant-numeric:tabular-nums;min-width:38px;text-align:right}
+.dxbig{position:absolute;inset:0;margin:auto;width:72px;height:72px;border-radius:50%;border:0;background:rgba(255,255,255,.92);display:grid;place-items:center;z-index:2;cursor:pointer;box-shadow:0 10px 30px -8px rgba(0,0,0,.6)}
+.dxbig .i{width:28px;height:28px;fill:var(--ink);margin-left:4px}
+.dxinfo{flex:0 0 auto;padding:10px 14px 12px;display:grid;gap:6px;cursor:pointer}
+.dxinfo .hk{font-size:15px;font-weight:600;line-height:1.35;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.dxtags{display:flex;gap:5px;flex-wrap:wrap;font-size:11.5px}
+.dxtags span{display:inline-flex;align-items:center;gap:4px;border-radius:6px;padding:2px 8px;background:var(--soft);border:1px solid var(--line2);color:var(--tx);font-weight:600}
+.dxtags .imm{background:var(--pri-soft);color:var(--pri);border-color:#e3d9ff}
+.dxtags .es{background:#fff4e5;color:#b54708;border-color:#fde3c2}
+.dxmore{font-size:12.5px;color:var(--pri);font-weight:600;display:inline-flex;align-items:center;gap:4px}
+.dxstamp{position:absolute;top:58px;z-index:4;font-weight:800;font-size:22px;letter-spacing:.06em;border:4px solid;border-radius:12px;padding:4px 12px;opacity:0;pointer-events:none;background:rgba(255,255,255,.85)}
+.dxstamp.save{left:16px;color:#12b76a;transform:rotate(-12deg)}
+.dxstamp.skip{right:16px;color:#f04438;transform:rotate(12deg)}
+.dxctl{flex:0 0 auto;display:flex;align-items:center;justify-content:center;gap:22px;padding:10px 12px calc(24px + env(safe-area-inset-bottom,0px))}
+.dxctl button{border:0;cursor:pointer;display:grid;place-items:center;border-radius:50%;transition:transform .15s var(--ease),opacity .2s;position:relative}
+.dxctl button:active{transform:scale(.92)}
+.dxctl button[disabled]{opacity:.35;pointer-events:none}
+.dxctl .skip,.dxctl .save{width:66px;height:66px;background:#fff;box-shadow:0 8px 22px -8px rgba(0,0,0,.6)}
+.dxctl .skip{color:#f04438}.dxctl .save{color:#fff;background:linear-gradient(135deg,#12b76a,#0ba5a0)}
+.dxctl .skip .i,.dxctl .save .i{width:30px;height:30px;stroke-width:2.4}
+.dxctl .save .i{fill:#fff}
+.dxctl .undo{width:50px;height:50px;background:#1b1d2b;color:#fbbf24}
+.dxctl .undo .i{width:22px;height:22px}
+.dxctl label{position:absolute;bottom:-17px;left:50%;transform:translateX(-50%);font-size:10.5px;color:#9a9fb5;white-space:nowrap;pointer-events:none}
+.dxempty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px;padding:24px;color:#d6d8e6}
+.dxempty b{font-size:19px;color:#fff}
+.dxempty .row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.dxbtn{border:0;border-radius:12px;padding:12px 16px;font-weight:700;cursor:pointer;background:#fff;color:var(--ink);display:inline-flex;align-items:center;gap:8px;min-height:46px}
+.dxbtn.pri{background:linear-gradient(135deg,#8b5cf6,#6d28d9);color:#fff}
+.dxbtn.ghost{background:#1b1d2b;color:#fff}
+/* sheets */
+.dxsheet{position:absolute;inset:0;z-index:10;display:none;background:rgba(5,6,12,.55);backdrop-filter:blur(2px)}
+.dxsheet.open{display:block;animation:fadein .2s both}
+.dxsheet .pane{position:absolute;left:0;right:0;bottom:0;max-height:92%;background:#fff;color:var(--ink);border-radius:20px 20px 0 0;display:flex;flex-direction:column;animation:sheetup .35s var(--ease) both;padding-bottom:env(safe-area-inset-bottom,0px)}
+.dxsheet .grab{width:42px;height:5px;border-radius:3px;background:#d0d5dd;margin:8px auto 2px;flex:0 0 auto}
+.dxsheet .sh{display:flex;align-items:center;gap:10px;padding:8px 16px 10px;border-bottom:1px solid var(--line2);flex:0 0 auto}
+.dxsheet .sh b{flex:1;font-size:17px;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dxsheet .sh button{width:40px;height:40px;border:0;border-radius:10px;background:var(--soft);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.dxsheet .sb{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:14px 16px 20px;display:grid;gap:16px;overscroll-behavior:contain}
+.dxsheet .sf{flex:0 0 auto;padding:10px 16px 14px;border-top:1px solid var(--line2);display:flex;gap:8px}
+.dxsheet .sf .dxbtn{flex:1;justify-content:center}
+.dxsheet .sf .dxbtn.ghost{background:var(--soft);color:var(--ink)}
+.dxgrp h4{margin:0 0 8px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);display:flex;align-items:center;gap:6px}
+.dxseg{display:flex;flex-wrap:wrap;gap:6px}
+.dxseg button{border:1.5px solid var(--line);background:#fff;color:var(--tx);border-radius:999px;padding:9px 14px;font-weight:600;font-size:14px;cursor:pointer;min-height:42px;display:inline-flex;align-items:center;gap:6px}
+.dxseg button small{color:var(--faint);font-weight:500;font-size:12px}
+.dxseg button[aria-pressed="true"]{border-color:var(--pri);background:var(--pri-soft);color:var(--pri)}
+.dxseg button[aria-pressed="true"] small{color:var(--pri)}
+.dxseg button.zero{opacity:.45}
+.dxnote{font-size:12.5px;color:var(--muted);line-height:1.5;background:var(--soft);border-radius:10px;padding:9px 11px}
+.dxnote b{color:var(--ink)}
+.dxin{width:100%;border:1.5px solid var(--line);border-radius:12px;padding:12px 13px;font-size:16px;outline:none;background:#fff;color:var(--ink)}
+.dxin:focus{border-color:var(--pri)}
+.dxchk{display:flex;align-items:flex-start;gap:10px;font-size:14px;cursor:pointer;padding:4px 0}
+.dxchk input{width:22px;height:22px;accent-color:var(--pri);flex:0 0 auto;margin:0}
+.dxchk small{display:block;color:var(--muted);font-size:12px}
+.dxboards{display:grid;gap:6px}
+.dxboards button{display:flex;align-items:center;gap:10px;border:1.5px solid var(--line);background:#fff;border-radius:12px;padding:10px 12px;cursor:pointer;text-align:left;min-height:52px;color:var(--ink)}
+.dxboards button[aria-pressed="true"]{border-color:var(--pri);background:var(--pri-soft)}
+.dxboards button span{flex:1;min-width:0}
+.dxboards button b{display:block;font-size:14.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dxboards button small{color:var(--muted);font-size:12px}
+.dxrow2{display:flex;gap:8px}
+.dxrow2 .dxin{flex:1;min-width:0}
+.dxsaved{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px}
+.dxsaved button{border:0;padding:0;background:var(--soft);border-radius:10px;overflow:hidden;cursor:pointer;aspect-ratio:4/5;position:relative;display:flex;align-items:flex-end;text-align:left;color:var(--ink)}
+.dxsaved img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dxsaved span{position:relative;font-size:11px;font-weight:600;background:rgba(255,255,255,.92);margin:5px;border-radius:6px;padding:2px 6px;max-width:calc(100% - 10px);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dxsaved .t{position:absolute;inset:0;padding:8px;font-size:11px;line-height:1.35;color:var(--tx);overflow:hidden}
+.dxtxt h5{margin:0 0 4px;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.dxtxt div{font-size:15px;line-height:1.6;white-space:pre-wrap;color:var(--tx);overflow-wrap:anywhere}
+.dxtxt.orig div{color:var(--muted);font-size:14px}
+.dxkv{display:grid;grid-template-columns:110px minmax(0,1fr);gap:8px 10px;font-size:14px}
+.dxkv dt{color:var(--muted)}.dxkv dd{margin:0;overflow-wrap:anywhere;font-weight:500}
+.dxkv a{color:var(--pri)}
+.dxlinks{display:flex;flex-wrap:wrap;gap:8px}
+.dxlinks a{display:inline-flex;align-items:center;gap:6px;border:1.5px solid var(--line);border-radius:10px;padding:9px 12px;text-decoration:none;color:var(--ink);font-weight:600;font-size:13.5px;min-height:42px}
+.dxtoast{position:absolute;left:50%;top:calc(64px + env(safe-area-inset-top,0px));transform:translateX(-50%);z-index:12;background:#fff;color:var(--ink);border-radius:999px;padding:8px 14px;font-size:13.5px;font-weight:600;box-shadow:0 10px 24px -10px rgba(0,0,0,.6);display:flex;gap:7px;align-items:center;white-space:nowrap;animation:toast 1.8s var(--ease) both;pointer-events:none;max-width:calc(100% - 24px);overflow:hidden;text-overflow:ellipsis}
+.dxsr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+@keyframes sheetup{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
+@media (min-width:861px){.dxstage{width:min(480px,100%);margin:0 auto}.dxfilt{justify-content:center}.dxsheet .pane{left:50%;right:auto;width:min(560px,100%);transform:translateX(-50%);border-radius:20px 20px 0 0}@keyframes sheetup{from{opacity:0}to{opacity:1}}}
+@media (max-height:640px){.dxctl{gap:14px;padding-top:8px}.dxctl .skip,.dxctl .save{width:56px;height:56px}.dxctl .undo{width:44px;height:44px}.dxinfo{padding:8px 12px}.dxinfo .hk{-webkit-line-clamp:1}}
+
+
+/* ---------- Mobile: whole page scrolls (not a boxed inner feed). Header hides on scroll down, returns on scroll up. ---------- */
+@media (max-width:860px){
+  html,body{height:auto;min-height:100%;overflow:visible;background:#fcfcfd}
+  body{overflow-x:hidden}
+  html:has(.modal.open),html:has(.side.open),html:has(.dx.open){overflow:hidden}
+  .app{display:block;height:auto;min-height:100vh;min-height:100dvh}
+  .main{display:block;overflow:visible;min-height:100vh;min-height:100dvh;margin:0;border-radius:0}
+  .topbar{position:sticky;top:0;z-index:30;background:rgba(255,255,255,.96);-webkit-backdrop-filter:saturate(1.4) blur(10px);backdrop-filter:saturate(1.4) blur(10px);transition:transform .28s var(--ease),box-shadow .2s}
+  .main.hdr-up .topbar{transform:translateY(-105%)}
+  .main.hdr-shadow .topbar{box-shadow:0 8px 18px -12px rgba(16,24,40,.4)}
+  .feed{overflow:visible;flex:none;min-height:70vh;scroll-behavior:auto;padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+  .library-update{padding:6px 10px}
+  .tabs{padding:4px 10px}
+}
 </style>
 <!-- RLM analytics: GA4 + Meta pixel (added 2026-10-31) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-G7FWPKBQBZ"></script>
@@ -707,7 +849,7 @@ function renderTop(){
   $("#ptitle").textContent=b?b.name:S.brand?S.brand:v[0];
   const tabs=S.view==="discover"?[["ads","grid","All Ads"],["brands","building","Brands"]]:S.view==="swipe"?[["ads","users","My Ads"],["boards","board","Boards"],["manual","upload","Manual Uploads"]]:[["brands","building","All Brands"]];
   $("#tabs").innerHTML=tabs.map(([k,i,l])=>`<button type="button" role="tab" data-tab="${k}" aria-selected="${S.tab===k}">${ic(i,"s")}${l}</button>`).join("")+
-    (S.board?`<button type="button" data-clearboard="1">${ic("x","s")}Leave board</button>`:"");
+    (S.board?`<button type="button" data-clearboard="1">${ic("x","s")}Leave board</button>`:"")+(S.view!=="brands"?`<button type="button" class="dxtab" data-dxgo="1">${ic("cards","s")}Swipe mode</button>`:"");
   $("#fbar").style.display=(S.tab==="boards"||S.view==="brands"||S.tab==="brands")?"none":"";
 }
 
@@ -824,7 +966,7 @@ function render(keepScroll){
   if(S.view==="brands"||S.tab==="brands") renderBrands();
   else if(S.tab==="boards") renderBoards();
   else renderGrid(keepScroll);
-  if(!keepScroll) $("#feed").scrollTop=0;
+  if(!keepScroll){ $("#feed").scrollTop=0; if(matchMedia("(max-width:860px)").matches&&scrollY>0) scrollTo(0,0); }
   store.set("sort",S.sort);
 }
 function refreshSaveUI(f){
@@ -1197,6 +1339,331 @@ render();
 loadManualMedia().then(()=>{ if(MAN.length&&S.view==="swipe") render(true); });
 const urlq=new URLSearchParams(location.search).get("q");
 if(urlq){$("#q").value=urlq; run(urlq);}
+
+/* ================= Swipe mode (Discover) =================
+   One ad at a time. Right = save into the active inspiration board (same Swipe File / boards storage as the grid).
+   Left = skip for this board's session only; nothing is deleted. Undo reverses the last decision.
+   Gesture model ported from 21st.dev "Card Stack": direction lock, flick velocity, rubber-band Y, stamps, return-from-exit undo. */
+Object.assign(ICONS,{
+ heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+ undo:'<path d="M3 7v6h6"/><path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>',
+ cards:'<rect width="12" height="16" x="9" y="5" rx="2" transform="rotate(8 15 13)"/><rect width="12" height="16" x="3" y="3" rx="2"/>',
+ sliders:'<path d="M21 4h-7"/><path d="M10 4H3"/><path d="M21 12h-9"/><path d="M8 12H3"/><path d="M21 20h-5"/><path d="M12 20H3"/><path d="M14 2v4"/><path d="M8 10v4"/><path d="M16 18v4"/>',
+ pause:'<rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/>',
+ vol:'<path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5Z"/><path d="M16 9a5 5 0 0 1 0 6"/><path d="M19.4 18.4a9 9 0 0 0 0-12.7"/>',
+ mute:'<path d="M11 4.7a.7.7 0 0 0-1.2-.5L6.4 7.6A1.4 1.4 0 0 1 5.4 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.4a1.4 1.4 0 0 1 1 .4l3.4 3.4a.7.7 0 0 0 1.2-.5Z"/><line x1="22" x2="16" y1="9" y2="15"/><line x1="16" x2="22" y1="9" y2="15"/>',
+ share:'<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/>',
+ save2:'<path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7"/><path d="M7 3v4a1 1 0 0 0 1 1h7"/>'
+});
+const DX=(()=>{
+  const FMTS=[["all","All"],["image","Images"],["video","Videos"]];
+  const CASES=[["all","Any case type"],["General immigration","General immigration"],["Employment immigration","Employment"],["Marriage/family green card","Marriage / family"],["Removal defense","Deportation / removal"],["VAWA","VAWA"],["T/U visa","T / U visa"],["Citizenship","Citizenship"],["Humanitarian/other relief","Humanitarian"],["Asylum","Asylum"],["Waivers","Waivers"],["Appeals","Appeals"]];
+  const LANGS=[["all","All"],["English","English"],["Spanish","Spanish"],["Russian","Russian"]];
+  const CLAIMS=[["all","Any"],["Price/offer stated","Price / offer"],["Money-back guarantee (offer)","Money-back"],["Outcome/result claim","Result claim"],["Scarcity/urgency","Urgency"],["Policy/time-sensitive claim","Policy news"]];
+  const LIVE=[["all","Any"],["live","Active only"]];
+  const GOES=[["all","Any"],["Landing page","Landing page"],["Instant form","Instant form"],["Facebook / Instagram page","FB / IG page"],["WhatsApp","WhatsApp"],["Messenger / DM","Messenger"]];
+  const FIRMS=[["all","All law firms"],...[...new Set(DB.filter(r=>r.rep).map(r=>r.adv))].sort((a,b)=>a.localeCompare(b)).map(a=>[a,a])];
+  const DEF={fmt:"all",cas:"all",lang:"all",claim:"all",live:"all",goes:"all",firm:"all",q:"",mediaOnly:true};
+  /* shareable link: #swipe?format=video&case=asylum&lang=es&claim=guarantee&live=1&goes=whatsapp&firm=...&q=... */
+  const slug=x=>norm(x).replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"");
+  const SL={fmt:{image:"image",video:"video"},cas:Object.fromEntries(CASES.slice(1).map(([v])=>[v,slug(v.replace("Removal defense","deportation").replace("Marriage/family green card","marriage").replace(" immigration",""))])),lang:{English:"en",Spanish:"es",Russian:"ru"},
+    claim:{"Price/offer stated":"price","Money-back guarantee (offer)":"guarantee","Outcome/result claim":"results","Scarcity/urgency":"urgency","Policy/time-sensitive claim":"policy"},
+    live:{live:"1"},goes:Object.fromEntries(GOES.slice(1).map(([v])=>[v,slug(v.split(" ")[0])])),firm:Object.fromEntries(FIRMS.slice(1).map(([v])=>[v,slug(v)]))};
+  const PK={fmt:"format",cas:"case",lang:"lang",claim:"claim",live:"live",goes:"goes",firm:"firm"};
+  function toQuery(f){ const q=new URLSearchParams(); Object.entries(PK).forEach(([k,n])=>{ if(f[k]&&f[k]!=="all"&&SL[k][f[k]]) q.set(n,SL[k][f[k]]); });
+    if(f.q) q.set("q",f.q); if(!f.mediaOnly) q.set("text","1"); return q.toString(); }
+  function fromQuery(str){ const q=new URLSearchParams(str), f={...DEF};
+    Object.entries(PK).forEach(([k,n])=>{ const v=(q.get(n)||"").toLowerCase(); if(!v) return; const hit=Object.entries(SL[k]).find(([full,sl])=>sl===v||norm(full)===norm(v)); if(hit) f[k]=hit[0]; });
+    if(q.get("q")) f.q=q.get("q").slice(0,80); if(q.get("text")==="1") f.mediaOnly=false; return f; }
+  const linkFor=f=>location.origin+location.pathname+"#swipe"+(toQuery(f)?"?"+toQuery(f):"");
+  const syncUrl=()=>{ try{ history.replaceState(null,"","#swipe"+(toQuery(st.filters)?"?"+toQuery(st.filters):"")); }catch(_){} };
+  const dxEv=(n,p)=>{ try{ window.gtag&&gtag("event",n,p||{}); }catch(_){} try{ window.fbq&&fbq("trackCustom",n,p||{}); }catch(_){} };
+  let st=store.get("dx",null)||{board:null,filters:{...DEF},sessions:{}};
+  st.filters={...DEF,...(st.filters||{})}; st.sessions=st.sessions||{};
+  const persist=()=>store.set("dx",st);
+  const sess=()=>{const k=st.board||"_none"; return st.sessions[k]||(st.sessions[k]={skipped:[],history:[]});};
+  let deck=[], el=null, cur=null, drag=null, busy=false;
+  const hasMedia=r=>!!(r.thumb||r.image||r.video||(r.cards||[]).some(c=>c.i||c.v));
+  const allText=r=>[r.hook,r.headline,r.copy,r.tr,r.cardText,r.en&&r.en.copy,r.en&&r.en.tr].filter(Boolean).join(" ");
+  function matches(r,f,skipKey){
+    if(skipKey!=="fmt"&&f.fmt!=="all"&&(f.fmt==="video")!==!!vidOf(r)) return false;
+    if(skipKey!=="cas"&&f.cas!=="all"&&!(r.facets.case||[]).includes(f.cas)) return false;
+    if(skipKey!=="firm"&&f.firm!=="all"&&r.adv!==f.firm) return false;
+    if(skipKey!=="lang"&&f.lang!=="all"&&r.lang!==f.lang) return false;
+    if(skipKey!=="claim"&&f.claim!=="all"&&!(r.facets.flag||[]).includes(f.claim)) return false;
+    if(skipKey!=="live"&&f.live==="live"&&r.status!=="Active") return false;
+    if(skipKey!=="goes"&&f.goes!=="all"&&r.dest!==f.goes) return false;
+    if(f.mediaOnly&&!hasMedia(r)) return false;
+    if(f.q){ const terms=norm(f.q).split(/\s+/).filter(Boolean); if(terms.some(t=>!r._hay.includes(t))) return false; }
+    return true;
+  }
+  const reps=()=>DB.filter(r=>r.rep);
+  const dupKey=r=>norm(r.adv)+"|"+norm((r.en&&r.en.hook)||r.hook||r.headline||r.copy||r.tr||"").replace(/[^a-z0-9 ]/g,"").replace(/\s+/g," ").trim().slice(0,70);
+  const inBoard=f=>{const s=SW.saved[f]; return !!(s&&st.board&&s.boards.includes(st.board));};
+  function candidates(f){
+    const seen=new Set(), seenMedia=new Set(), out=[];
+    const list=reps().filter(r=>matches(r,f)).sort((a,b)=>(((b.score?b.score.total:0)-(a.score?a.score.total:0)))||((b.days||0)-(a.days||0))||((b.score?b.score.total:0)-(a.score?a.score.total:0))||((b.days||0)-(a.days||0)));
+    for(const r of list){ const k=dupKey(r), m=thumbOf(r)||vidOf(r); if(k.length>12&&seen.has(k)) continue; if(m&&seenMedia.has(m)) continue; seen.add(k); if(m) seenMedia.add(m); out.push(r);} return out;
+  }
+  function build(){
+    const s=sess(), skip=new Set(s.skipped);
+    deck=candidates(st.filters).filter(r=>!skip.has(r.fam)&&!inBoard(r.fam));
+  }
+  const total=()=>candidates(st.filters).length;
+  /* ---------- markup ---------- */
+  function mount(){
+    if(el) return;
+    el=document.createElement("div"); el.className="dx"; el.id="dx"; el.setAttribute("role","dialog"); el.setAttribute("aria-modal","true"); el.setAttribute("aria-label","Swipe mode");
+    el.innerHTML=`<div class="dxbar"><button class="ib" type="button" data-dx="close" aria-label="Back to grid">${ic("left")}</button>
+      <button class="dxboard" type="button" data-dx="boards"><span>${ic("board","s")}</span><span style="flex:1"><small>Saving to</small><b id="dxbname"></b></span>${ic("down","s")}</button>
+      <button class="ib" type="button" data-dx="share" aria-label="Share this swipe link">${ic("share")}</button>
+      <button class="ib" type="button" data-dx="filters" aria-label="What you're looking for">${ic("sliders")}</button></div>
+      <div class="dxfilt" id="dxfilt"></div>
+      <div class="dxstage" id="dxstage" aria-live="off"></div>
+      <div class="dxctl"><button class="skip" type="button" data-dx="skip" aria-label="Skip (left)">${ic("x")}<label>Skip</label></button>
+        <button class="undo" type="button" data-dx="undo" aria-label="Undo">${ic("undo")}<label>Undo</label></button>
+        <button class="save" type="button" data-dx="save" aria-label="Save to board (right)">${ic("heart")}<label>Save</label></button></div>
+      <div class="dxsheet" id="dxsheet"><div class="pane" id="dxpane"></div></div>
+      <p class="dxsr" role="status" id="dxsr"></p>`;
+    document.body.appendChild(el);
+    el.addEventListener("click",onClick);
+    el.addEventListener("input",onInput);
+    el.addEventListener("change",onInput);
+  }
+  function boardName(){const b=SW.boards.find(x=>x.id===st.board); return b?b.name:"My picks (made on first save)";}
+  function ensureBoard(){ if(st.board&&SW.boards.some(b=>b.id===st.board)) return; const ex=SW.boards.find(b=>b.name==="My picks"); const b=ex||{id:"b"+Date.now(),name:"My picks",folder:(SW.folders[0]||{}).id||"f1"}; if(!ex) SW.boards.push(b); st.board=b.id; saveSW(); persist(); }
+  function boardCount(id){return Object.values(SW.saved).filter(s=>s.boards.includes(id)).length;}
+  function filterChips(){
+    const f=st.filters, c=[];
+    const L=(A,v)=>(A.find(n=>n[0]===v)||[,v])[1];
+    if(f.fmt!=="all") c.push(L(FMTS,f.fmt)); if(f.cas!=="all") c.push(L(CASES,f.cas)); if(f.firm!=="all") c.push(f.firm); if(f.lang!=="all") c.push(f.lang); if(f.claim!=="all") c.push(L(CLAIMS,f.claim)); if(f.live==="live") c.push("Active"); if(f.goes!=="all") c.push(L(GOES,f.goes));
+    if(f.q) c.push(`"${f.q}"`); if(!c.length) c.push("All ads");
+    return c.map(x=>`<span>${esc(x)}</span>`).join("")+`<span class="n">${deck.length} left · ${boardCount(st.board)} saved</span>`;
+  }
+  function tagHTML(r){const t=[]; const cs=(r.facets.case||[]).filter(x=>x!=="Unclassified"); if(cs[0]) t.push(`<span class="imm">${ic("scale","xs")}${esc(L2(CASES,cs[0]))}</span>`);
+    t.push(`<span>${ic(vidOf(r)?"video":"image","xs")}${vidOf(r)?"Video":"Image"}</span>`); if(r.lang&&r.lang!=="English"&&r.lang!=="Unlabeled") t.push(`<span class="es">${esc(({Spanish:"ES",Russian:"RU",Chinese:"ZH"})[r.lang]||r.lang.slice(0,2).toUpperCase())}${r.en?" + EN":""}</span>`); if(r.dest&&r.dest!=="Not in record") t.push(`<span>${ic(r.dest==="Instant form"?"form":"arrow","xs")}${esc(L2(GOES,r.dest))}</span>`); return t.join("");}
+  const L2=(A,v)=>(A.find(n=>n[0]===v)||[,v])[1];
+  function mediaHTML(r){
+    const v=vidOf(r), th=thumbOf(r);
+    if(v) return `<div class="dxmedia" data-v="${esc(v)}">${th?`<div class="bg" style="background-image:url('${esc(th)}')"></div>`:""}<div class="skel"></div>
+       <video playsinline webkit-playsinline preload="${th?"none":"metadata"}" muted ${th?`poster="${esc(th)}"`:""} src="${esc(v)}"></video>
+       <button class="dxbig" type="button" data-dx="play" aria-label="Play video">${ic("play")}</button>
+       <div class="dxvc" data-noswipe><button type="button" class="pl" data-dx="play" aria-label="Play or pause">${ic("play")}</button><input type="range" min="0" max="1000" value="0" aria-label="Seek" data-dx="seek"><span class="t">0:00</span><button type="button" data-dx="mute" aria-label="Unmute">${ic("mute")}</button></div></div>`;
+    if(th) return `<div class="dxmedia"><div class="bg" style="background-image:url('${esc(th)}')"></div><div class="skel"></div><img src="${esc(th)}" alt="Ad creative from ${esc(r.adv)}" decoding="async"></div>`;
+    const t=mainText(r);
+    return `<div class="dxmedia"><div class="dxtext"><span class="lab">${r.src&&String(r.src).startsWith("Meta")?"Text only · media not saveable from Meta":"Text only · no media in record"}</span>${t.head?`<div class="hd">${esc(t.head)}</div>`:""}<div class="bd">${esc(t.body||"")}</div></div></div>`;
+  }
+  function cardHTML(r,cls=""){
+    const E=r.en||{}; const hk=E.hook||E.headline||r.hook||r.headline||r.cardText||(r.copy||"").slice(0,140);
+    return `<div class="dxcard ${cls}" data-fam="${esc(r.fam)}" role="group" aria-label="${esc(r.adv)} ad">
+      <div class="dxch">${avatar(r.adv)}<b>${esc(r.adv)}</b><span class="age ${isLive(r)?"on":""}">${ageTxt(r)}</span></div>
+      ${mediaHTML(r)}
+      <div class="dxinfo" data-dx="info"><div class="hk">${esc(hk)}</div><div class="dxtags">${tagHTML(r)}</div><span class="dxmore">${ic("info","xs")}Tap for full copy, transcript and source</span></div>
+      <span class="dxstamp save">SAVE</span><span class="dxstamp skip">SKIP</span></div>`;
+  }
+  let forceTop=null;
+  function render(){
+    build(); if(forceTop){ const i=deck.findIndex(r=>r.fam===forceTop); let r=i>=0?deck.splice(i,1)[0]:(DB.find(x=>x.fam===forceTop&&x.rep)||DB.find(x=>x.fam===forceTop)); if(r) deck.unshift(r); forceTop=null; } cur=deck[0]||null;
+    $("#dxbname").textContent=boardName(); $("#dxfilt").innerHTML=filterChips();
+    const stage=$("#dxstage");
+    if(!cur){
+      const sk=sess().skipped.length, n=total();
+      stage.innerHTML=`<div class="dxempty">${ic("search","l")}<b>${n?"You're through this stack":"No ads match"}</b>${n?`${boardCount(st.board)} saved to "${esc(boardName())}". ${sk} skipped this session.`:"Nothing matches these filters together."}
+        <div class="row">${sk?`<button class="dxbtn" type="button" data-dx="reset">${ic("undo","s")}Bring back skipped (${sk})</button>`:""}<button class="dxbtn ghost" type="button" data-dx="filters">${ic("sliders","s")}Change filters</button><button class="dxbtn ghost" type="button" data-dx="viewsaved">${ic("heart","s")}View saved</button></div></div>`;
+      ctl(); return;
+    }
+    stage.innerHTML=(deck[2]?cardHTML(deck[2],"back2"):"")+(deck[1]?cardHTML(deck[1],"back"):"")+cardHTML(cur);
+    wire(stage.lastElementChild); ctl();
+    deck.slice(1,4).forEach(r=>{const t=thumbOf(r); if(t){const i=new Image(); i.decoding="async"; i.src=t;}});
+  }
+  function ctl(){ const top=!!cur; el.querySelector('[data-dx="skip"]').disabled=!top; el.querySelector('[data-dx="save"]').disabled=!top; el.querySelector('[data-dx="undo"]').disabled=!sess().history.length; }
+  function wire(card){
+    card.querySelectorAll("img").forEach(img=>{
+      const done=()=>img.parentElement.querySelector(".skel")?.remove();
+      img.onload=done; img.onerror=()=>{const m=img.parentElement; m.innerHTML=`<div class="fail">${ic("image","l")}Image didn't load (the link may have expired).${cur&&cur.lib?`<a href="${esc(cur.lib)}" target="_blank" rel="noopener">Open in Meta Ad Library</a>`:cur&&cur.fp?`<a href="${esc(cur.fp)}" target="_blank" rel="noopener">Open in Foreplay</a>`:""}</div>`;};
+      if(img.complete&&img.naturalWidth) done();
+    });
+    const v=card.querySelector("video");
+    if(v){ const m=v.parentElement, vc=m.querySelector(".dxvc"), rng=vc.querySelector("input"), t=vc.querySelector(".t");
+      const fmt=s=>isFinite(s)?`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`:"0:00";
+      v.addEventListener("loadeddata",()=>m.querySelector(".skel")?.remove());
+      if(v.poster) setTimeout(()=>m.querySelector(".skel")?.remove(),300);
+      v.addEventListener("timeupdate",()=>{ if(!rng.dataset.drag) rng.value=v.duration?Math.round(v.currentTime/v.duration*1000):0; t.textContent=fmt(v.currentTime); });
+      v.addEventListener("play",()=>{vc.querySelector(".pl").innerHTML=ic("pause"); m.querySelector(".dxbig")?.remove(); vc.hidden=false;});
+      v.addEventListener("pause",()=>{vc.querySelector(".pl").innerHTML=ic("play");});
+      v.addEventListener("error",()=>{ m.querySelector(".skel")?.remove(); m.querySelector(".dxbig")?.remove(); vc.hidden=true; if(v.poster){ m.insertAdjacentHTML("beforeend",`<img src="${esc(v.poster)}" alt="" style="position:absolute;inset:0;margin:auto">`); } m.insertAdjacentHTML("beforeend",`<div class="fail" style="position:absolute;inset:auto 0 0 0;background:rgba(10,12,20,.8)">Video didn't load. ${cur&&cur.fp?`<a href="${esc(cur.fp)}" target="_blank" rel="noopener">Open in Foreplay</a>`:""}</div>`); });
+      rng.addEventListener("pointerdown",e=>{e.stopPropagation(); rng.dataset.drag=1;}); rng.addEventListener("pointerup",()=>delete rng.dataset.drag);
+    }
+    card.addEventListener("pointerdown",down); card.addEventListener("pointermove",move); card.addEventListener("pointerup",up); card.addEventListener("pointercancel",up);
+  }
+  /* ---------- gesture ---------- */
+  const resistY=y=>{const d=Math.abs(y); return d<=40?y:Math.sign(y)*(40+(1-1/(((d-40)*.55)/120+1))*120);};
+  function setT(card,x,y){ card.style.transform=`translate(${x}px,${resistY(y)}px) rotate(${x*.06}deg)`;
+    card.querySelector(".dxstamp.save").style.opacity=Math.max(0,Math.min(1,(x-16)/80)); card.querySelector(".dxstamp.skip").style.opacity=Math.max(0,Math.min(1,(-x-16)/80));
+    const b=$("#dxstage .dxcard.back"); if(b){const k=Math.min(1,Math.abs(x)/160); b.style.transform=`scale(${.94+k*.06})`; b.style.opacity=.45+k*.55;} }
+  function down(e){ if(busy||!e.isPrimary||(e.pointerType==="mouse"&&e.button!==0)) return; if(e.target.closest("[data-noswipe],button,a,input")) return;
+    const card=e.currentTarget; card.classList.remove("settle");
+    drag={card,id:e.pointerId,x0:e.clientX,y0:e.clientY,x:0,y:0,lock:null,samples:[{t:e.timeStamp,x:e.clientX}]}; }
+  function move(e){ if(!drag||e.pointerId!==drag.id) return; const dx=e.clientX-drag.x0, dy=e.clientY-drag.y0;
+    if(!drag.lock){ if(Math.hypot(dx,dy)<8) return; drag.lock=Math.abs(dx)>Math.abs(dy)*1.1?"x":"y"; if(drag.lock==="x"){ try{drag.card.setPointerCapture(e.pointerId);}catch(_){}} }
+    if(drag.lock!=="x") return; e.preventDefault(); drag.x=dx; drag.y=dy; drag.samples.push({t:e.timeStamp,x:e.clientX}); if(drag.samples.length>10) drag.samples.shift(); setT(drag.card,dx,dy); }
+  function up(e){ if(!drag||e.pointerId!==drag.id) return; const d=drag; drag=null;
+    if(!d.lock){ if(e.type==="pointerup"&&!e.target.closest("[data-noswipe],button,a,input")){ const v=d.card.querySelector("video"); if(v&&e.target.closest(".dxmedia")) togglePlay(v); else openInfo(); } return; }
+    if(d.lock!=="x") return;
+    const s=d.samples.filter(p=>e.timeStamp-p.t<=90), vx=s.length>1?(s[s.length-1].x-s[0].x)/((s[s.length-1].t-s[0].t)/1000||1):0;
+    const w=d.card.offsetWidth, dir=Math.sign(d.x);
+    const flick=Math.abs(vx)>500&&Math.sign(vx)===dir&&Math.abs(d.x)>12, far=Math.abs(d.x)>Math.min(w*.32,130)&&!(Math.sign(vx)===-dir&&Math.abs(vx)>300);
+    if(e.type!=="pointercancel"&&(flick||far)) return decide(dir>0?"save":"skip",d);
+    d.card.classList.add("settle"); setT(d.card,0,0); setTimeout(()=>d.card.classList.remove("settle"),460); }
+  function togglePlay(v){ if(v.paused){ v.play().catch(()=>{v.muted=true; v.play().catch(()=>{});}); } else v.pause(); }
+  /* ---------- decisions ---------- */
+  function decide(kind,d){
+    if(!cur||busy) return; if(kind==="save") ensureBoard(); busy=true;
+    const r=cur, card=$("#dxstage .dxcard:last-child"), s=sess(), wasSaved=!!SW.saved[r.fam], hadBoard=inBoard(r.fam);
+    card.querySelectorAll("video").forEach(v=>v.pause());
+    if(kind==="save"){ const e=SW.saved[r.fam]||(SW.saved[r.fam]={at:Date.now(),boards:[]}); if(!e.boards.includes(st.board)) e.boards.push(st.board); saveSW(); }
+    else { if(!s.skipped.includes(r.fam)) s.skipped.push(r.fam); }
+    s.history.push({fam:r.fam,kind,wasSaved,hadBoard}); if(s.history.length>200) s.history.shift(); persist();
+    const dir=kind==="save"?1:-1, x0=d?d.x:0, y0=d?d.y:0;
+    card.style.transition="transform .42s cubic-bezier(.2,.7,.3,1),opacity .3s ease .12s";
+    requestAnimationFrame(()=>{ card.style.transform=`translate(${dir*innerWidth*1.1}px,${resistY(y0)-60}px) rotate(${dir*22}deg)`; card.style.opacity="0";
+      card.querySelector(kind==="save"?".dxstamp.save":".dxstamp.skip").style.opacity=1; });
+    dxEv(kind==="save"?"swipe_save":"swipe_skip",{advertiser:r.adv.slice(0,90)});
+    say(`${r.adv}: ${kind==="save"?"saved to "+boardName():"skipped"}.`);
+    if(kind==="save") flash(`${ic("heart","s")}Saved to ${esc(boardName())}`);
+    setTimeout(()=>{busy=false; render(); refreshSaveUI&&refreshSaveUI(r.fam);},matchMedia("(prefers-reduced-motion:reduce)").matches?0:300);
+  }
+  function undo(){
+    const s=sess(), h=s.history.pop(); if(!h||busy) return;
+    if(h.kind==="save"){ const e=SW.saved[h.fam]; if(e&&!h.hadBoard){ e.boards=e.boards.filter(b=>b!==st.board); if(!h.wasSaved&&!e.boards.length) delete SW.saved[h.fam]; } saveSW(); }
+    else s.skipped=s.skipped.filter(f=>f!==h.fam);
+    persist(); forceTop=h.fam; render();
+    const card=$("#dxstage .dxcard:last-child"); if(card&&card.animate){ card.animate([{transform:`translateX(${(h.kind==="save"?1:-1)*120}%) rotate(${(h.kind==="save"?1:-1)*18}deg)`,opacity:0},{transform:"none",opacity:1}],{duration:380,easing:"cubic-bezier(.34,1.3,.64,1)"}); }
+    say("Undone."); flash(`${ic("undo","s")}Undone`); refreshSaveUI&&refreshSaveUI(h.fam);
+  }
+  function say(t){ const s=$("#dxsr"); if(s) s.textContent=t; }
+  function flash(h){ el.querySelectorAll(".dxtoast").forEach(x=>x.remove()); el.insertAdjacentHTML("beforeend",`<div class="dxtoast">${h}</div>`); setTimeout(()=>el.querySelectorAll(".dxtoast").forEach(x=>x.remove()),1900); }
+  /* ---------- sheets ---------- */
+  function sheet(title,body,foot){ const p=$("#dxpane"); p.innerHTML=`<div class="grab"></div><div class="sh"><b>${title}</b><button type="button" data-dx="shclose" aria-label="Close">${ic("x")}</button></div><div class="sb">${body}</div>${foot?`<div class="sf">${foot}</div>`:""}`; $("#dxsheet").classList.add("open"); el.querySelectorAll(".dxcard video").forEach(v=>v.pause()); }
+  function closeSheet(){ $("#dxsheet").classList.remove("open"); }
+  let draft=null;
+  function segs(key,opts){ const f=draft; return `<div class="dxseg" role="group">${opts.map(([v,l])=>{const n=candidates({...f,[key]:v}).length; return `<button type="button" data-dxf="${key}" data-v="${esc(v)}" aria-pressed="${f[key]===v}" class="${n?"":"zero"}">${esc(l)} <small>${n}</small></button>`;}).join("")}</div>`; }
+  function openFilters(){ draft={...st.filters}; drawFilters(); }
+  function drawFilters(){
+    const n=candidates(draft).length;
+    sheet("What are you looking for?",
+     `<div class="dxgrp"><h4>${ic("layers","xs")}Format</h4>${segs("fmt",FMTS)}<p class="dxnote" style="margin-top:8px">Images include single-image, carousel and dynamic ads with a still picture. Videos are any ad with a playable video.</p></div>
+      <div class="dxgrp"><h4>${ic("scale","xs")}Case type</h4>${segs("cas",CASES)}<p class="dxnote" style="margin-top:8px">Tagged from the ad text. An ad can have several.</p></div>
+      <div class="dxgrp"><h4>${ic("languages","xs")}Language</h4>${segs("lang",LANGS)}</div>
+      <div class="dxgrp"><h4>${ic("building","xs")}Law firm</h4><select class="dxin" data-dxsel="firm">${FIRMS.map(([v,l])=>{const n=candidates({...draft,firm:v}).length; return `<option value="${esc(v)}" ${draft.firm===v?"selected":""}>${esc(l)} (${n})</option>`;}).join("")}</select></div>
+      <div class="dxgrp"><h4>${ic("tag","xs")}What the ad claims</h4>${segs("claim",CLAIMS)}<p class="dxnote" style="margin-top:8px">From the "Check before reuse" flags. Keyword-based.</p></div>
+      <div class="dxgrp"><h4>${ic("radio","xs")}Status</h4>${segs("live",LIVE)}</div>
+      <div class="dxgrp"><h4>${ic("arrow","xs")}Ad goes to</h4>${segs("goes",GOES)}</div>
+      <div class="dxgrp"><h4>${ic("search","xs")}Keyword</h4><input class="dxin" type="search" data-dxq="1" value="${esc(draft.q)}" placeholder="e.g. asylo, free consultation, parole" enterkeyhint="done"></div>
+      <label class="dxchk"><input type="checkbox" data-dxk="mediaOnly" ${draft.mediaOnly?"checked":""}><span>Only ads with saved images or video<small>${reps().filter(r=>!hasMedia(r)).length} ads have text only in the record (no saved image or video).</small></span></label>`,
+     `<button class="dxbtn ghost" type="button" data-dx="freset">Reset</button><button class="dxbtn ghost" type="button" data-dx="fshare" aria-label="Copy a link with these filters">${ic("share","s")}Link</button><button class="dxbtn pri" type="button" data-dx="fapply" id="dxapply">${n?`Show ${n} ads`:"No ads match"}</button>`);
+  }
+  function openBoards(){
+    sheet("Inspiration boards",
+     `<div class="dxgrp"><h4>${ic("plus","xs")}New board</h4><div class="dxrow2"><input class="dxin" id="dxnewb" placeholder="What are you working on? e.g. Spanish intake ads" enterkeyhint="done" maxlength="80"><button class="dxbtn pri" type="button" data-dx="newboard">Create</button></div></div>
+      ${SW.boards.length?`<div class="dxgrp"><h4>${ic("board","xs")}Your boards</h4><div class="dxboards">${SW.boards.map(b=>`<button type="button" data-dxb="${b.id}" aria-pressed="${st.board===b.id}">${ic("board","s")}<span><b>${esc(b.name)}</b><small>${boardCount(b.id)} saved · ${(st.sessions[b.id]||{skipped:[]}).skipped.length} skipped</small></span>${st.board===b.id?ic("check","s"):""}</button>`).join("")}</div></div>`:""}
+      ${st.board?`<button class="dxbtn ghost" type="button" data-dx="viewsaved" style="background:var(--soft);color:var(--ink)">${ic("heart","s")}View saved in "${esc(boardName())}"</button>`:""}
+      <div class="dxgrp"><h4>${ic("save2","xs")}Backup</h4><p class="dxnote">Boards, saves and skips are stored <b>in this browser on this device only</b>. They don't sync to your other phone or computer. Export a backup file to keep them or move them.</p>
+        <div class="dxrow2" style="margin-top:8px"><button class="dxbtn ghost" type="button" data-dx="export" style="background:var(--soft);color:var(--ink);flex:1;justify-content:center">${ic("download","s")}Export</button><label class="dxbtn ghost" style="background:var(--soft);color:var(--ink);flex:1;justify-content:center">${ic("upload","s")}Import<input type="file" accept="application/json,.json" data-dx="import" hidden></label></div></div>`);
+  }
+  function openSaved(){
+    const fams=Object.entries(SW.saved).filter(([f,s])=>s.boards.includes(st.board)).sort((a,b)=>b[1].at-a[1].at).map(([f])=>(FAMS[f]||[]).find(x=>x.rep)||(FAMS[f]||[])[0]||MAN.find(m=>m.fam===f)).filter(Boolean);
+    sheet(`Saved in "${esc(boardName())}"`, fams.length?`<div class="dxsaved">${fams.map(r=>{const t=thumbOf(r); return `<button type="button" data-dxopen="${esc(r.id)}">${t?`<img src="${esc(t)}" alt="" loading="lazy">`:`<div class="t">${esc(mainText(r).body.slice(0,120))}</div>`}<span>${esc(r.adv)}</span></button>`;}).join("")}</div>`:`<p class="dxnote">Nothing saved here yet. Swipe right or tap the heart.</p>`,
+      `<button class="dxbtn ghost" type="button" data-dx="gridboard">${ic("grid","s")}Open in grid</button>`);
+  }
+  function openInfo(r){
+    r=r||cur; if(!r) return; const E=r.en||{};
+    const blk=(h,t,en)=>!t?"":en?`<div class="dxtxt"><h5>${h} in English</h5><div>${esc(en)}</div></div><div class="dxtxt orig"><h5>Original ${h.toLowerCase()} (Spanish)</h5><div>${esc(t)}</div></div>`:`<div class="dxtxt"><h5>${h}</h5><div>${esc(t)}</div></div>`;
+    const dest=r.dest==="Landing page"&&r.landing?`<a href="${esc(r.landing)}" target="_blank" rel="noopener">${esc(domainOf(r.landing))}</a>`:esc(r.dest||"Not in record");
+    sheet(esc(r.adv),
+     `<dl class="dxkv"><dt>Advertiser</dt><dd>${esc(r.adv)}</dd><dt>Case type</dt><dd>${esc((r.facets.case||[]).join(", "))}</dd><dt>Format</dt><dd>${esc(r.fmt)}${r.vdur?` · ${Math.round(r.vdur)}s`:""}</dd><dt>Language</dt><dd>${esc(r.lang)}</dd>
+       <dt>Status</dt><dd>${isLive(r)?"Active when captured":"Inactive when captured"}${r.days!=null?` · ${r.days} days`:""}</dd><dt>Ad goes to</dt><dd>${dest}</dd>${(r.facets.flag||[]).filter(o=>o!=="No flags").length?`<dt>Check before reuse</dt><dd>${esc(r.facets.flag.filter(o=>o!=="No flags").join(", "))}</dd>`:""}${r.score?`<dt>Editorial score</dt><dd>${esc(String(r.score.total))}</dd>`:""}<dt>Source</dt><dd>${esc(r.src||"Foreplay")}</dd></dl>
+      ${blk("Headline",r.headline,E.headline)}${blk("Ad copy",r.copy,E.copy)}${blk("Transcript",r.tr,E.tr)}${blk("Card text",r.cardText,E.cardText)}
+      <div class="dxlinks">${r.lib?`<a href="${esc(r.lib)}" target="_blank" rel="noopener">${ic("ext","s")}Meta Ad Library</a>`:""}${r.fp?`<a href="${esc(r.fp)}" target="_blank" rel="noopener">${ic("ext","s")}Foreplay</a>`:""}${vidOf(r)||r.image?`<a href="${esc(vidOf(r)||r.image)}" target="_blank" rel="noopener">${ic("download","s")}${vidOf(r)?"Video file":"Image file"}</a>`:""}</div>
+      <p class="dxnote">No spend, CPL or results data exists for this ad.</p>`,
+     cur&&r.fam===cur.fam?`<button class="dxbtn ghost" type="button" data-dx="skip" style="background:var(--soft);color:#f04438">${ic("x","s")}Skip</button><button class="dxbtn pri" type="button" data-dx="save" style="background:linear-gradient(135deg,#12b76a,#0ba5a0)">${ic("heart","s")}Save</button>`:"");
+  }
+  async function share(f){ const url=linkFor(f); const n=candidates(f).length; const title=`Swipe ${n} immigration law firm ads`; dxEv("swipe_link_shared",{ads:n});
+    try{ if(navigator.share&&matchMedia("(pointer:coarse)").matches){ await navigator.share({title,text:title,url}); return; } }catch(x){ if(x&&x.name==="AbortError") return; }
+    try{ await navigator.clipboard.writeText(url); flash(`${ic("check","s")}Link copied`); }catch(_){ sheet("Share this swipe link",`<p class="dxnote">Anyone with this link opens Swipe mode with these filters. Their saves stay in their own browser.</p><input class="dxin" readonly value="${esc(url)}" onfocus="this.select()">`); } }
+  /* ---------- backup ---------- */
+  function exportAll(){
+    const data={app:"rlm-immigration-ad-library",version:1,exported:new Date().toISOString(),swipe:SW,discover:st,manual:MAN.map(m=>Object.fromEntries(Object.entries(m).filter(([k])=>!["_hay","_fields","_ms","_i"].includes(k)).map(([k,v])=>[k,(k==="video"||k==="image")&&String(v).startsWith("blob:")?"":v])))};
+    const a=document.createElement("a"); a.href=URL.createObjectURL(new Blob([JSON.stringify(data,null,1)],{type:"application/json"})); a.download=`rlm-immigration-library-backup-${new Date().toISOString().slice(0,10)}.json`; document.body.appendChild(a); a.click(); a.remove(); flash(`${ic("check","s")}Backup downloaded`);
+  }
+  async function importFile(f){
+    try{ const d=JSON.parse(await f.text()); if(!d||!d.swipe||!d.swipe.saved) throw new Error("Not a library backup");
+      const s=d.swipe; Object.entries(s.saved).forEach(([k,v])=>{const e=SW.saved[k]; if(!e) SW.saved[k]=v; else e.boards=[...new Set([...(e.boards||[]),...(v.boards||[])])];});
+      (s.folders||[]).forEach(x=>{if(!SW.folders.some(y=>y.id===x.id)) SW.folders.push(x);}); (s.boards||[]).forEach(x=>{if(!SW.boards.some(y=>y.id===x.id)) SW.boards.push(x);});
+      if(d.discover&&d.discover.sessions) Object.entries(d.discover.sessions).forEach(([k,v])=>{const e=st.sessions[k]; if(!e) st.sessions[k]=v; else e.skipped=[...new Set([...e.skipped,...(v.skipped||[])])];});
+      (d.manual||[]).forEach(m=>{ if(!MAN.some(x=>x.id===m.id)){prep(m); MAN.push(m);} }); store.set("manual",MAN.map(m=>Object.fromEntries(Object.entries(m).filter(([k])=>!["_hay","_fields","_ms","_i"].includes(k)))));
+      if(!st.board&&SW.boards[0]) st.board=SW.boards[0].id; saveSW(); persist(); closeSheet(); render(); flash(`${ic("check","s")}Backup imported (nothing was removed)`);
+    }catch(x){ flash(`${ic("x","s")}Couldn't import: ${esc(x.message)}`); }
+  }
+  /* ---------- events ---------- */
+  function onInput(e){ const t=e.target;
+    if(t.dataset.dxq){ draft.q=t.value; const b=$("#dxapply"); const n=candidates(draft).length; if(b) b.textContent=n?`Show ${n} ads`:"No ads match"; return; }
+    if(t.dataset.dxsel&&e.type==="change"){ draft[t.dataset.dxsel]=t.value; drawFilters(); return; }
+    if(t.dataset.dxk&&e.type==="change"){ draft[t.dataset.dxk]=t.checked; const q=draft.q; drawFilters(); return; }
+    if(t.dataset.dx==="import"&&e.type==="change"&&t.files[0]) importFile(t.files[0]);
+  }
+  function onClick(e){
+    e.stopPropagation();
+    const t=e.target.closest("[data-dx],[data-dxf],[data-dxb],[data-dxopen]"); if(!t) { if(e.target.id==="dxsheet") closeSheet(); return; }
+    if(t.dataset.dxf){ draft[t.dataset.dxf]=t.dataset.v; drawFilters(); return; }
+    if(t.dataset.dxb){ st.board=t.dataset.dxb; persist(); closeSheet(); render(); flash(`${ic("board","s")}Board: ${esc(boardName())}`); return; }
+    if(t.dataset.dxopen){ const r=byId(t.dataset.dxopen); if(r) openInfo(r); return; }
+    const a=t.dataset.dx;
+    if(a==="close") return close();
+    if(a==="filters") return openFilters();
+    if(a==="boards") return openBoards();
+    if(a==="viewsaved") return openSaved();
+    if(a==="shclose") return closeSheet();
+    if(a==="fapply"){ st.filters={...draft}; dxEv("swipe_filters",{filters:toQuery(draft).slice(0,90)}); persist(); syncUrl(); closeSheet(); render(); return; }
+    if(a==="share") return share(st.filters);
+    if(a==="fshare") return share(draft);
+    if(a==="freset"){ draft={...DEF}; drawFilters(); return; }
+    if(a==="skip"||a==="save"){ closeSheet(); return decide(a); }
+    if(a==="undo") return undo();
+    if(a==="reset"){ sess().skipped=[]; persist(); render(); flash(`${ic("undo","s")}Skipped ads are back`); return; }
+    if(a==="newboard"){ const n=($("#dxnewb").value||"").trim(); if(!n){ $("#dxnewb").focus(); return; } const b={id:"b"+Date.now(),name:n,folder:(SW.folders[0]||{}).id||"f1"}; SW.boards.push(b); st.board=b.id; saveSW(); persist(); closeSheet(); render(); renderSide(); flash(`${ic("board","s")}Board "${esc(n)}" created`); return; }
+    if(a==="export") return exportAll();
+    if(a==="gridboard"){ const b=st.board; close(); S.view="swipe"; S.tab="ads"; S.board=b; LIMIT=60; window.render(); return; }
+    if(a==="play"){ const v=t.closest(".dxmedia").querySelector("video"); return togglePlay(v); }
+    if(a==="mute"){ const v=t.closest(".dxmedia").querySelector("video"); v.muted=!v.muted; t.innerHTML=ic(v.muted?"mute":"vol"); t.setAttribute("aria-label",v.muted?"Unmute":"Mute"); return; }
+  }
+  el=null;
+  document.addEventListener("input",e=>{ const t=e.target; if(t.dataset&&t.dataset.dx==="seek"){ const v=t.closest(".dxmedia").querySelector("video"); if(v.duration) v.currentTime=t.value/1000*v.duration; } },true);
+  document.addEventListener("keydown",e=>{ if(!el||!el.classList.contains("open")) return; e.stopImmediatePropagation();
+    if(e.key==="Escape"){ if($("#dxsheet").classList.contains("open")) closeSheet(); else close(); return; }
+    if(e.target.matches("input,textarea,select")||$("#dxsheet").classList.contains("open")) return;
+    if(e.key==="ArrowRight"){e.preventDefault(); decide("save");} else if(e.key==="ArrowLeft"){e.preventDefault(); decide("skip");} else if(e.key==="Backspace"||e.key.toLowerCase()==="z"){e.preventDefault(); undo();} else if(e.key===" "){ const v=$("#dxstage .dxcard:last-child video"); if(v){e.preventDefault(); togglePlay(v);} } else if(e.key==="Enter"||e.key==="i") openInfo(); },true);
+  function open(fromLink){ mount(); closeModal&&closeModal(); if(fromLink!=null){ st.filters=fromQuery(fromLink); persist(); } dxEv("swipe_open",{from_link:fromLink?1:0,filters:toQuery(st.filters).slice(0,90)}); el.classList.add("open"); document.documentElement.style.overflow="hidden"; render(); syncUrl(); el.querySelector('[data-dx="close"]').focus({preventScroll:true}); }
+  function close(){ if(!el) return; el.querySelectorAll("video").forEach(v=>v.pause()); closeSheet(); el.classList.remove("open"); document.documentElement.style.overflow=""; try{history.replaceState(null,"",location.pathname+location.search);}catch(_){} window.render(true); }
+  return {open,close,toQuery,fromQuery,linkFor,get state(){return st;},get deck(){return deck;},decide,undo,candidates};
+})();
+document.addEventListener("click",e=>{ if(e.target.closest("[data-dxgo]")){ e.stopPropagation(); DX.open(); } },true);
+document.body.insertAdjacentHTML("beforeend",`<button class="dxfab" type="button" data-dxgo="1" aria-label="Open Swipe mode">${ic("cards","s")}Swipe</button>`);
+const dxHash=()=>{ const h=location.hash; if(h==="#swipe"||h.startsWith("#swipe?")) return h.slice(7); return null; };
+if(dxHash()!=null) DX.open(dxHash());
+addEventListener("hashchange",()=>{ const q=dxHash(); if(q!=null) DX.open(q); });
+window.render(true);
+
+/* ---------- Mobile page scroll: hide header on scroll down, show on scroll up, load more near the bottom ---------- */
+(()=>{ const MQ=matchMedia("(max-width:860px)"), main=document.querySelector(".main"); let lastY=scrollY, tick=false;
+  function onScroll(){ if(!MQ.matches) return; const y=Math.max(0,scrollY), d=y-lastY;
+    if(y<90) main.classList.remove("hdr-up"); else if(d>8) main.classList.add("hdr-up"); else if(d<-8) main.classList.remove("hdr-up");
+    main.classList.toggle("hdr-shadow",y>4); lastY=y;
+    if(typeof POP!=="undefined"&&POP&&Math.abs(d)>2) closePop();
+    if(innerHeight+y>document.documentElement.scrollHeight-900&&LAST.length>LIMIT&&(S.tab==="ads"||S.tab==="manual")&&S.view!=="brands"){ const had=LIMIT; LIMIT+=60; renderGrid(had); } }
+  addEventListener("scroll",()=>{ if(!tick){ tick=true; requestAnimationFrame(()=>{ tick=false; onScroll(); }); } },{passive:true});
+  document.addEventListener("focusin",e=>{ if(e.target.id==="q") main.classList.remove("hdr-up"); });
+})();
 </script>
 </body>
 </html>
