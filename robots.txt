@@ -1,11 +1,6 @@
-User-agent: LinkedInBot
-Allow: /
-
-User-agent: Twitterbot
-Allow: /
-
-User-agent: facebookexternalhit
-Allow: /
-
 User-agent: *
-Disallow: /
+Allow: /
+Disallow: /data/
+Disallow: /tools/
+
+Sitemap: https://library.rocketlaunchmedia.com/sitemap.xml
